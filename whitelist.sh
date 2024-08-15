@@ -42,6 +42,9 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # Allow established and related incoming connections (IPv6)
 ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+# Allow ipv6 icmp, without it, ipv6 network might be unreachable as certain ipv6 important feature is not enabled (NDP)
+ip6tables -A INPUT -p icmpv6 -j ACCEPT
+
 # Allow incoming traffic from specific IP addresses (IPv4)
 for ip in "${ALLOWED_IPS[@]}"
 do
