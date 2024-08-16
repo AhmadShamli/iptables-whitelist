@@ -6,6 +6,9 @@ ALLOWED_IPS=("192.168.1.100" "192.168.1.101")
 # Specify the IP addresses you want to allow (IPv6)
 ALLOWED_IPS_V6=("2001:db8::1" "2001:db8::2")
 
+#### Allowed ports from any IP
+ALLOWED_PORTS=("22" "80" "443")
+
 # Function to check if a package is installed
 is_installed() {
     dpkg -l "$1" &> /dev/null
@@ -55,6 +58,13 @@ done
 for ip in "${ALLOWED_IPS_V6[@]}"
 do
     ip6tables -A INPUT -s "$ip" -j ACCEPT
+done
+
+# Allow incoming traffic on specified ports from any IP
+for port in "${ALLOWED_PORTS[@]}"
+do
+    iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
+    ip6tables -A INPUT -p tcp --dport "$port" -j ACCEPT
 done
 
 # Save the rules for IPv4
